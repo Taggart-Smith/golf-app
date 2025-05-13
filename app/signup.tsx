@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
-import * as SecureStore from 'expo-secure-store';
 
 export default function Signup() {
   const router = useRouter();
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -13,15 +13,17 @@ export default function Signup() {
       const res = await fetch('http://localhost:3001/api/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ name, email, password }),
       });
 
       const data = await res.json();
+
       if (res.ok) {
-        await SecureStore.setItemAsync('token', data.token);
+        // ✅ Store token in localStorage for web
+        localStorage.setItem('token', data.token);
         router.push('/tee-times-test');
       } else {
-        Alert.alert('Signup Failed', data.message || 'Check your input');
+        Alert.alert('Signup Failed', data.message || 'Something went wrong');
       }
     } catch (err) {
       console.error(err);
@@ -32,10 +34,28 @@ export default function Signup() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Sign Up</Text>
-      <TextInput style={styles.input} placeholder="Email" onChangeText={setEmail} autoCapitalize="none" />
-      <TextInput style={styles.input} placeholder="Password" onChangeText={setPassword} secureTextEntry />
+      <TextInput
+        style={styles.input}
+        placeholder="Name"
+        onChangeText={setName}
+        value={name}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Email"
+        onChangeText={setEmail}
+        autoCapitalize="none"
+        value={email}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Password"
+        onChangeText={setPassword}
+        secureTextEntry
+        value={password}
+      />
       <TouchableOpacity style={styles.button} onPress={handleSignup}>
-        <Text style={styles.buttonText}>Create Account</Text>
+        <Text style={styles.buttonText}>Sign Up</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => router.push('/login')}>
         <Text style={styles.link}>Already have an account? Log in</Text>

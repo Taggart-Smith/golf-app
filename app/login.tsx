@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
-import * as SecureStore from 'expo-secure-store';
 
 export default function Login() {
   const router = useRouter();
@@ -18,7 +17,8 @@ export default function Login() {
 
       const data = await res.json();
       if (res.ok) {
-        await SecureStore.setItemAsync('token', data.token);
+        // ✅ Store token in localStorage for web
+        localStorage.setItem('token', data.token);
         router.push('/tee-times-test');
       } else {
         Alert.alert('Login Failed', data.message || 'Check your credentials');
