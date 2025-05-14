@@ -1,9 +1,19 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+  Platform,
+} from 'react-native';
 import { useRouter } from 'expo-router';
+import { useAuth } from './context/AuthContext.js';
 
 export default function Login() {
   const router = useRouter();
+  const { login } = useAuth(); // ✅ Use AuthContext
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -17,9 +27,12 @@ export default function Login() {
 
       const data = await res.json();
       if (res.ok) {
-        // ✅ Store token in localStorage for web
-        localStorage.setItem('token', data.token);
-        router.push('/tee-times-test');
+        if (Platform.OS === 'web') {
+          localStorage.setItem('token', data.token); // Optional: persist token
+        }
+
+        login({ email, token: data.token }); // ✅ update context
+        router.replace('/tee-times-test'); // Navigate post-login
       } else {
         Alert.alert('Login Failed', data.message || 'Check your credentials');
       }

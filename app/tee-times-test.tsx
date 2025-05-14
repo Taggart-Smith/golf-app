@@ -8,6 +8,7 @@ import {
   StyleSheet,
   Platform,
 } from 'react-native';
+import ProtectedRoute from './components/ProtectedRoute.js'
 
 const formatDate = (date: Date): string => {
   return date.toISOString().split('T')[0]; // "2025-04-17"
@@ -65,76 +66,79 @@ const TeeSheet = () => {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.header}>Tee Sheet</Text>
+    <ProtectedRoute>
 
-      <View style={{ alignItems: 'center', marginBottom: 12 }}>
-        {Platform.OS === 'web' ? (
-          <input
-            type="date"
-            value={formatDate(selectedDate)}
-            onChange={(e) => setSelectedDate(new Date(e.target.value))}
-            style={{
-              padding: 10,
-              fontSize: 16,
-              borderRadius: 8,
-              border: '1px solid #ccc',
-              width: 180,
-              textAlign: 'center',
-            }}
-          />
-        ) : (
-          <>
-            <TouchableOpacity
-              onPress={() => setShowPicker(true)}
+      <ScrollView style={styles.container}>
+        <Text style={styles.header}>Tee Sheet</Text>
+
+        <View style={{ alignItems: 'center', marginBottom: 12 }}>
+          {Platform.OS === 'web' ? (
+            <input
+              type="date"
+              value={formatDate(selectedDate)}
+              onChange={(e) => setSelectedDate(new Date(e.target.value))}
               style={{
-                backgroundColor: '#e9ecef',
-                paddingVertical: 10,
-                paddingHorizontal: 20,
+                padding: 10,
+                fontSize: 16,
                 borderRadius: 8,
+                border: '1px solid #ccc',
+                width: 180,
+                textAlign: 'center',
               }}
-            >
-              <Text>{formatDate(selectedDate)}</Text>
-            </TouchableOpacity>
-            {showPicker && (
-              <DateTimePicker
-                value={selectedDate}
-                mode="date"
-                display="default"
-                onChange={onChangeDate}
-              />
-            )}
-          </>
-        )}
-      </View>
-
-      {timeSlots.map((time, index) => (
-        <View key={index} style={styles.row}>
-          <View style={styles.timeColumn}>
-            <Text style={styles.timeText}>{time}</Text>
-          </View>
-
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            <View style={styles.courseSlotRow}>
-              {(teeTimesByTime[time] || []).map((tt, i) => (
-                <TouchableOpacity
-                  key={i}
-                  style={styles.teeSlot}
-                  onPress={() =>
-                    console.log(`Booked ${tt.courseName} at ${time}`)
-                  }
-                >
-                  <Text style={styles.teeSlotText}>{tt.courseName}</Text>
-                  <Text style={styles.teeSlotSub}>
-                    ${tt.priceWalk.toFixed(2)} / ${tt.priceWithCart.toFixed(2)} • {tt.spotsLeft} spots
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </ScrollView>
+            />
+          ) : (
+            <>
+              <TouchableOpacity
+                onPress={() => setShowPicker(true)}
+                style={{
+                  backgroundColor: '#e9ecef',
+                  paddingVertical: 10,
+                  paddingHorizontal: 20,
+                  borderRadius: 8,
+                }}
+              >
+                <Text>{formatDate(selectedDate)}</Text>
+              </TouchableOpacity>
+              {showPicker && (
+                <DateTimePicker
+                  value={selectedDate}
+                  mode="date"
+                  display="default"
+                  onChange={onChangeDate}
+                />
+              )}
+            </>
+          )}
         </View>
-      ))}
-    </ScrollView>
+
+        {timeSlots.map((time, index) => (
+          <View key={index} style={styles.row}>
+            <View style={styles.timeColumn}>
+              <Text style={styles.timeText}>{time}</Text>
+            </View>
+
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              <View style={styles.courseSlotRow}>
+                {(teeTimesByTime[time] || []).map((tt, i) => (
+                  <TouchableOpacity
+                    key={i}
+                    style={styles.teeSlot}
+                    onPress={() =>
+                      console.log(`Booked ${tt.courseName} at ${time}`)
+                    }
+                  >
+                    <Text style={styles.teeSlotText}>{tt.courseName}</Text>
+                    <Text style={styles.teeSlotSub}>
+                      ${tt.priceWalk.toFixed(2)} / ${tt.priceWithCart.toFixed(2)} • {tt.spotsLeft} spots
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </ScrollView>
+          </View>
+        ))}
+      </ScrollView>
+    </ProtectedRoute>
   );
 };
 

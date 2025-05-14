@@ -6,7 +6,7 @@ export default function Index() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Welcome to the Golf App</Text>
+      <Text style={styles.text}>Welcome to the Golf Application</Text>
       <TouchableOpacity
         style={styles.button}
         onPress={() => router.push("/tee-times-test")}
@@ -14,17 +14,17 @@ export default function Index() {
         <Text style={styles.buttonText}>View Tee Times</Text>
       </TouchableOpacity>
       <TouchableOpacity
-  style={styles.button}
-  onPress={() => router.push("/login")}
->
-  <Text style={styles.buttonText}>Login</Text>
-</TouchableOpacity>
-<TouchableOpacity
-  style={[styles.button, { marginTop: 12 }]}
-  onPress={() => router.push("/signup")}
->
-  <Text style={styles.buttonText}>Sign Up</Text>
-</TouchableOpacity>
+        style={styles.button}
+        onPress={() => router.push("/login")}
+      >
+        <Text style={styles.buttonText}>Login</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={[styles.button, { marginTop: 12 }]}
+        onPress={() => router.push("/signup")}
+      >
+        <Text style={styles.buttonText}>Sign Up</Text>
+      </TouchableOpacity>
 
     </View>
   );
