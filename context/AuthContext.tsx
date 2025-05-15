@@ -5,7 +5,7 @@ import React, {
     useEffect,
     useState,
 } from "react";
-import { router, useSegments } from "expo-router";
+import { router, useRouter, useSegments } from "expo-router";
 
 // ✅ Define the User and context types
 type User = {
@@ -25,16 +25,28 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 // ✅ Custom hook for redirecting
 function useProtectedRoute(user: User | null) {
     const segments = useSegments();
+    const router = useRouter();
+
+    const [isReady, setIsReady] = useState(false);
 
     useEffect(() => {
+        if (segments.length > 0) {
+            setIsReady(true);
+        }
+    }, [segments]);
+
+    useEffect(() => {
+        if (!isReady) return;
+
         const inAuthGroup = segments[0] === "(auth)";
         if (!user && !inAuthGroup) {
             router.replace("/(auth)/login");
         } else if (user && inAuthGroup) {
             router.replace("/(tabs)");
         }
-    }, [user, segments]);
+    }, [user, isReady, segments]);
 }
+
 
 // ✅ Hook to use context
 export function useAuth() {
