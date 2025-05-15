@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useAuth } from '../../context/AuthContext'; // make sure the path is correct
 
 export default function Signup() {
   const router = useRouter();
+  const { login } = useAuth(); // ✅ get login function from AuthContext
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -19,9 +21,16 @@ export default function Signup() {
       const data = await res.json();
 
       if (res.ok) {
-        // ✅ Store token in localStorage for web
-        localStorage.setItem('token', data.token);
-        router.push('/tee-times-test');
+        // Optional: Store token in web
+        if (Platform.OS === 'web') {
+          localStorage.setItem('token', data.token);
+        }
+
+        // ✅ Update Auth Context
+        login(email, password);
+
+        // ✅ Navigate to protected tab screen
+        router.replace('/tee-times-test');
       } else {
         Alert.alert('Signup Failed', data.message || 'Something went wrong');
       }
